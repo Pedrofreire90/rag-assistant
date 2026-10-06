@@ -1,0 +1,14 @@
+fastapi==0.115.*
+uvicorn[standard]==0.32.*
+python-multipart
+langchain>=0.3
+langchain-openai
+langchain-anthropic
+langchain-postgres
+langchain-text-splitters
+psycopg[binary]
+sqlalchemy>=2
+pypdf
+python-docx
+pandas
+openpyxl
