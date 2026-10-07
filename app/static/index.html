@@ -24,7 +24,9 @@ input[type=text]{flex:1;font:inherit;padding:10px 12px;border:1px solid var(--li
 .cite{display:inline-block;background:var(--acc);color:#fff;border-radius:4px;font-size:.75rem;padding:0 5px;margin:0 1px}
 .src{font-size:.82rem;color:var(--mute);margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
 .src details{margin:3px 0}.src summary{cursor:pointer}
-form{display:flex;gap:8px;margin-top:12px}
+form{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.opt{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mute);white-space:nowrap;cursor:pointer}
+.mode{font-size:.75rem;color:var(--mute);margin-top:8px}
 </style></head><body>
 <div class="app">
 <aside class="card"><h1>Documentos</h1>
@@ -36,7 +38,9 @@ form{display:flex;gap:8px;margin-top:12px}
  <div id="docs"></div></aside>
 <main class="card"><h1>Pergunte aos seus documentos</h1>
  <div id="chat"><div class="msg bot">Envie documentos à esquerda e faça perguntas. Cada resposta traz as fontes usadas.</div></div>
- <form id="f"><input type="text" id="q" placeholder="Digite sua pergunta" required><button id="go">Perguntar</button></form></main>
+ <form id="f"><input type="text" id="q" placeholder="Digite sua pergunta" required style="min-width:200px">
+  <label class="opt"><input type="checkbox" id="rr" checked> Usar reranking</label>
+  <button id="go">Perguntar</button></form></main>
 </div>
 <script>
 const $=id=>document.getElementById(id);
@@ -62,12 +66,12 @@ $('f').onsubmit=async e=>{
   e.preventDefault();const q=$('q').value.trim();$('q').value='';$('go').disabled=true;
   add('me',esc(q));const w=add('bot','Buscando…');
   try{
-    const r=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const r=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,rerank:$('rr').checked})});
     const j=await r.json();if(!r.ok)throw new Error(j.detail);
     const used=new Set([...j.answer.matchAll(/\[(\d+)\]/g)].map(m=>+m[1]));
     const src=j.sources.filter(s=>used.has(s.id));
     w.innerHTML=esc(j.answer).replace(/\[(\d+)\]/g,'<span class="cite">$1</span>')+
-     (src.length?'<div class="src">'+src.map(s=>`<details><summary><span class="cite">${s.id}</span> ${esc(s.source)} · ${esc(s.location)} · relevância ${s.relevance}</summary>${esc(s.snippet)}…</details>`).join('')+'</div>':'');
+     (src.length?'<div class="src">'+src.map(s=>`<details><summary><span class="cite">${s.id}</span> ${esc(s.source)} · ${esc(s.location)} · relevância ${s.relevance}${s.reranked?` (vetorial ${s.vector_relevance})`:''}</summary>${esc(s.snippet)}…</details>`).join('')+'</div>':'')+`<div class="mode">${j.sources.some(x=>x.reranked)?'Busca vetorial + reranking':'Busca vetorial'}</div>`;
   }catch(err){w.textContent='Erro: '+err.message}
   $('go').disabled=false;
 };
