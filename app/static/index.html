@@ -12,8 +12,10 @@ h1{font-size:1.2rem;margin:0 0 12px}h2{font-size:1rem;margin:0 0 8px}
 button{font:inherit;border:0;border-radius:8px;background:var(--acc);color:#fff;padding:9px 16px;cursor:pointer}
 button.ghost{background:none;color:var(--mute);padding:2px 8px}button:disabled{opacity:.5}
 input[type=text]{flex:1;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
-.drop{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--mute);cursor:pointer}
-.drop.over{border-color:var(--acc)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:20px 12px;text-align:center;color:var(--mute);cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,var(--bg))}
+.drop svg{width:28px;height:28px;stroke:var(--acc);margin-bottom:6px}
+.drop strong{color:var(--ink);font-weight:600}.drop small{font-size:.78rem}
 .doc{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:.9rem;word-break:break-all}
 .doc small{color:var(--mute)}
 #chat{display:flex;flex-direction:column;gap:12px;min-height:60vh}
@@ -26,7 +28,9 @@ form{display:flex;gap:8px;margin-top:12px}
 </style></head><body>
 <div class="app">
 <aside class="card"><h1>Documentos</h1>
- <label class="drop" id="drop">Arraste PDF, DOCX, XLSX ou CSV<br>ou clique para escolher
+ <label class="drop" id="drop">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+  <strong>Enviar documentos</strong><small>PDF, DOCX, XLSX ou CSV · arraste ou clique</small>
   <input id="file" type="file" multiple accept=".pdf,.docx,.xlsx,.xls,.csv" hidden></label>
  <div id="status" style="font-size:.85rem;color:var(--mute);margin:8px 0"></div>
  <div id="docs"></div></aside>
