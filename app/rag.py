@@ -1,4 +1,5 @@
 """Vector store (pgvector), recuperação e geração com citações."""
+import logging
 import os
 from functools import lru_cache
 
@@ -7,7 +8,12 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_postgres import PGVector
 from sqlalchemy import create_engine, text
 
+from . import reranker
+
+log = logging.getLogger(__name__)
 COLLECTION = "docs"
+RERANK_DEFAULT = os.getenv("RERANK", "true").lower() == "true"
+CANDIDATES = int(os.getenv("RERANK_CANDIDATES", "20"))  # quantos trechos a busca vetorial entrega ao reranker
 
 PROMPT = ChatPromptTemplate.from_messages([
     ("system",
@@ -62,14 +68,26 @@ def list_sources():
         return [{"source": r.source, "chunks": r.chunks} for r in rows]
 
 
-def ask(question: str, k: int = 5) -> dict:
-    hits = store().similarity_search_with_score(question, k=k)  # score = distância cosseno
+def ask(question: str, k: int = 5, rerank: bool | None = None) -> dict:
+    use_rerank = RERANK_DEFAULT if rerank is None else rerank
+    # Com reranking, busca-se mais candidatos e o cross-encoder escolhe os k melhores.
+    hits = store().similarity_search_with_score(question, k=max(k, CANDIDATES) if use_rerank else k)
     if not hits:
         return {"answer": "Nenhum documento indexado ainda.", "sources": []}
+
+    ranked = [(d, s, None) for d, s in hits[:k]]
+    if use_rerank:
+        try:
+            ranked = reranker.rerank(question, hits, k)
+        except Exception:  # sem o modelo, degrada para a busca vetorial pura
+            log.exception("Reranking falhou; usando ordem da busca vetorial")
+
     context = "\n\n".join(f"[{i}] ({d.metadata['source']}, {d.metadata['location']})\n{d.page_content}"
-                          for i, (d, _) in enumerate(hits, start=1))
+                          for i, (d, _, _) in enumerate(ranked, start=1))
     answer = (PROMPT | llm()).invoke({"context": context, "question": question}).content
     sources = [{"id": i, "source": d.metadata["source"], "location": d.metadata["location"],
-                "relevance": round(1 - s, 3), "snippet": d.page_content[:350]}
-               for i, (d, s) in enumerate(hits, start=1)]
+                "relevance": round(rr if rr is not None else 1 - s, 3),
+                "vector_relevance": round(1 - s, 3), "reranked": rr is not None,
+                "snippet": d.page_content[:350]}
+               for i, (d, s, rr) in enumerate(ranked, start=1)]
     return {"answer": answer, "sources": sources}
