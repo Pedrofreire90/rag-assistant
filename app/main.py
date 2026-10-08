@@ -13,6 +13,7 @@ class Question(BaseModel):
     question: str = Field(min_length=3)
     k: int = Field(5, ge=1, le=15)
     rerank: bool | None = None  # None = usa o padrão do .env (RERANK)
+    hybrid: bool | None = None  # None = usa o padrão do .env (HYBRID)
 
 
 @app.post("/documents")
@@ -43,7 +44,7 @@ def remove(name: str):
 @app.post("/ask")
 def ask(q: Question):
     try:
-        return rag.ask(q.question, q.k, q.rerank)
+        return rag.ask(q.question, q.k, q.rerank, q.hybrid)
     except Exception as e:
         raise HTTPException(500, str(e))
 

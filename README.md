@@ -13,9 +13,10 @@ docker compose up --build
 1. **Upload** (`POST /documents`): extrai texto (pypdf, python-docx, pandas) por página/aba.
 2. **Chunking**: `RecursiveCharacterTextSplitter` (1000 chars, overlap 150), com metadados `source` e `location`.
 3. **Embeddings**: OpenAI `text-embedding-3-small`, gravados no PostgreSQL via `pgvector` (LangChain `PGVector`).
-4. **Busca semântica + reranking** (`POST /ask`): a busca vetorial recupera 20 candidatos por cosseno e um cross-encoder multilíngue (FlashRank) reordena e mantém os 5 melhores. Use `"rerank": false` no corpo da requisição para comparar.
-5. **Geração**: trechos numerados vão ao LLM (Claude ou OpenAI), que responde só com base neles e cita `[n]`.
-6. **Interface**: a UI mostra as fontes realmente citadas, com trecho e relevância.
+4. **Busca híbrida**: a busca vetorial (cosseno) e a busca lexical (full-text do PostgreSQL, índice GIN) rodam em paralelo e são combinadas por RRF. Use `"hybrid": false` para desligar.
+5. **Reranking** (`POST /ask`): a busca vetorial recupera 20 candidatos por cosseno e um cross-encoder multilíngue (FlashRank) reordena e mantém os 5 melhores. Use `"rerank": false` no corpo da requisição para comparar.
+6. **Geração**: trechos numerados vão ao LLM (Claude ou OpenAI), que responde só com base neles e cita `[n]`.
+7. **Interface**: a UI mostra as fontes realmente citadas, com trecho e relevância.
 
 ## Estrutura
 ```
