@@ -28,3 +28,23 @@ app/static/    interface web
 
 ## Próximos passos
 Reranking, busca híbrida (BM25 + vetor), OCR para PDFs escaneados, autenticação e coleções por usuário, avaliação com RAGAS.
+
+## Avaliação
+
+Mede em que posição o trecho correto aparece, em cada modo (vetorial, híbrida, com reranking, híbrida + reranking).
+
+1. Copie `eval/questions.example.json` para `eval/questions.json` e escreva suas perguntas.
+   - `question`: a pergunta.
+   - `expect_contains`: textos que o trecho correto contém (sem acento/maiúscula; todos precisam estar no mesmo trecho).
+   - `source` (opcional): nome do arquivo esperado. `answer_contains` (opcional): palavras que a resposta final deve ter.
+2. Rode:
+```bash
+docker compose exec app python -m app.evaluate eval/questions.json
+docker compose exec app python -m app.evaluate eval/questions.json --modes vetorial,hibrida+rerank --answers
+```
+Saída: Hit@1/3/5, MRR e tempo médio por modo, as perguntas que falharam e um JSON em `eval/results/`.
+`--answers` chama o LLM (custa tokens) e confere `answer_contains`.
+
+## Conversa com memória
+
+A interface envia as últimas 6 mensagens junto com cada pergunta (`history` em `POST /ask`). Em perguntas de acompanhamento ("e o segundo?"), o LLM primeiro reescreve a pergunta de forma independente, e essa versão é usada na busca. A resposta final também recebe o histórico. A pergunta reescrita aparece na interface como "Pergunta interpretada". O botão **Nova conversa** limpa o histórico.

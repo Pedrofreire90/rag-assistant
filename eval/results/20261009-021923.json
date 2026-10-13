@@ -1,0 +1,142 @@
+{
+  "resumo": {
+    "vetorial": {
+      "hit@1": 0.0,
+      "hit@3": 0.0,
+      "hit@5": 0.0,
+      "mrr": 0.0,
+      "ms": 620.4089169994404
+    },
+    "hibrida": {
+      "hit@1": 0.0,
+      "hit@3": 0.0,
+      "hit@5": 0.0,
+      "mrr": 0.0,
+      "ms": 454.9729659993318
+    },
+    "vetorial+rerank": {
+      "hit@1": 0.0,
+      "hit@3": 0.0,
+      "hit@5": 0.0,
+      "mrr": 0.0,
+      "ms": 5406.553187600002
+    },
+    "hibrida+rerank": {
+      "hit@1": 0.0,
+      "hit@3": 0.0,
+      "hit@5": 0.0,
+      "mrr": 0.0,
+      "ms": 6867.678821800291
+    }
+  },
+  "detalhe": {
+    "vetorial": [
+      {
+        "question": "O que é bitcoin?",
+        "rank": null,
+        "ms": 1186.8808340004762
+      },
+      {
+        "question": "Por que o bitcoin é considerado o dinheiro do povo?",
+        "rank": null,
+        "ms": 511.7539469993062
+      },
+      {
+        "question": "O que é uma transação de bitcoin?",
+        "rank": null,
+        "ms": 409.3007109986502
+      },
+      {
+        "question": "Por que cartões de credito não são seguros?",
+        "rank": null,
+        "ms": 409.5490609997796
+      },
+      {
+        "question": "Por que uma transação de bitcoin é mais segura quem uma com cartão de crédito?",
+        "rank": null,
+        "ms": 584.5600319989899
+      }
+    ],
+    "hibrida": [
+      {
+        "question": "O que é bitcoin?",
+        "rank": null,
+        "ms": 375.9621680001146
+      },
+      {
+        "question": "Por que o bitcoin é considerado o dinheiro do povo?",
+        "rank": null,
+        "ms": 524.6498349988542
+      },
+      {
+        "question": "O que é uma transação de bitcoin?",
+        "rank": null,
+        "ms": 500.38826200034237
+      },
+      {
+        "question": "Por que cartões de credito não são seguros?",
+        "rank": null,
+        "ms": 378.75423199875513
+      },
+      {
+        "question": "Por que uma transação de bitcoin é mais segura quem uma com cartão de crédito?",
+        "rank": null,
+        "ms": 495.11033299859264
+      }
+    ],
+    "vetorial+rerank": [
+      {
+        "question": "O que é bitcoin?",
+        "rank": null,
+        "ms": 4534.637790000488
+      },
+      {
+        "question": "Por que o bitcoin é considerado o dinheiro do povo?",
+        "rank": null,
+        "ms": 4460.36321900101
+      },
+      {
+        "question": "O que é uma transação de bitcoin?",
+        "rank": null,
+        "ms": 5088.604847998795
+      },
+      {
+        "question": "Por que cartões de credito não são seguros?",
+        "rank": null,
+        "ms": 5727.363422000053
+      },
+      {
+        "question": "Por que uma transação de bitcoin é mais segura quem uma com cartão de crédito?",
+        "rank": null,
+        "ms": 7221.796658999665
+      }
+    ],
+    "hibrida+rerank": [
+      {
+        "question": "O que é bitcoin?",
+        "rank": null,
+        "ms": 7074.973051001507
+      },
+      {
+        "question": "Por que o bitcoin é considerado o dinheiro do povo?",
+        "rank": null,
+        "ms": 7212.009564000255
+      },
+      {
+        "question": "O que é uma transação de bitcoin?",
+        "rank": null,
+        "ms": 6243.835573999604
+      },
+      {
+        "question": "Por que cartões de credito não são seguros?",
+        "rank": null,
+        "ms": 7566.110387999288
+      },
+      {
+        "question": "Por que uma transação de bitcoin é mais segura quem uma com cartão de crédito?",
+        "rank": null,
+        "ms": 6241.465532000802
+      }
+    ]
+  }
+}

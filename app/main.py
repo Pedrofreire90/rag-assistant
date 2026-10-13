@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,11 +11,17 @@ from .ingest import load_chunks
 app = FastAPI(title="Assistente RAG")
 
 
+class Turn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
 class Question(BaseModel):
     question: str = Field(min_length=3)
     k: int = Field(5, ge=1, le=15)
     rerank: bool | None = None  # None = usa o padrão do .env (RERANK)
     hybrid: bool | None = None  # None = usa o padrão do .env (HYBRID)
+    history: list[Turn] = Field(default_factory=list, max_length=20)  # conversa anterior
 
 
 @app.post("/documents")
@@ -44,9 +52,20 @@ def remove(name: str):
 @app.post("/ask")
 def ask(q: Question):
     try:
-        return rag.ask(q.question, q.k, q.rerank, q.hybrid)
+        return rag.ask(q.question, q.k, q.rerank, q.hybrid, [t.model_dump() for t in q.history])
     except Exception as e:
         raise HTTPException(500, str(e))
+
+
+class DebugQuery(BaseModel):
+    question: str = Field(min_length=3)
+    contains: str | None = None  # texto que o trecho correto deveria conter, ex.: "CANTO XXI"
+    k: int = Field(5, ge=1, le=15)
+
+
+@app.post("/debug/retrieval")
+def debug_retrieval(q: DebugQuery):
+    return rag.debug_retrieval(q.question, q.contains, q.k)
 
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")

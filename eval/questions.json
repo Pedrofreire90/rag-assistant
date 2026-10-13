@@ -1,0 +1,23 @@
+[
+  {
+    "question": "O que é bitcoin?",
+    "expect_contains": ["moeda digital, tecnologia, descentralizado"] 
+  },
+  {
+    "question": "Por que o bitcoin é considerado o dinheiro do povo?",
+    "expect_contains": ["Com um simples download de aplicativos, elas podem se tornar imediatamente..."],
+    "answer_contains": ["moeda internacional"]
+  },
+  {
+    "question": "O que é uma transação de bitcoin?",
+    "expect_contains": ["estrutura de dados assinada"]
+  },
+  {
+    "question": "Por que cartões de credito não são seguros?",
+    "expect_contains": ["porque o token em si é a chave secreta. Se você transmite esse token, expõe sua conta a riscos"]
+  },
+  {
+    "question": "Por que uma transação de bitcoin é mais segura quem uma com cartão de crédito?",
+    "expect_contains": ["O que é transmitido não é uma chave, mas simplesmente uma mensagem assinada"]
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "question": "Qual é o canto XXI?",
+    "expect_contains": ["CANTO XXI"],
+    "note": "caso difícil: pergunta sobre estrutura, o título é o sinal"
+  },
+  {
+    "question": "Qual o prazo de vigência do contrato?",
+    "expect_contains": ["24 meses"],
+    "source": "contrato.pdf",
+    "answer_contains": ["24"]
+  },
+  {
+    "question": "O que diz a cláusula sobre rescisão?",
+    "expect_contains": ["rescisão"]
+  }
+]

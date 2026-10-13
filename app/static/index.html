@@ -36,7 +36,7 @@ form{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
   <input id="file" type="file" multiple accept=".pdf,.docx,.xlsx,.xls,.csv" hidden></label>
  <div id="status" style="font-size:.85rem;color:var(--mute);margin:8px 0"></div>
  <div id="docs"></div></aside>
-<main class="card"><h1>Pergunte aos seus documentos</h1>
+<main class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h1 style="margin:0">Pergunte aos seus documentos</h1><button type="button" class="ghost" id="new" style="border:1px solid var(--line)">Nova conversa</button></div>
  <div id="chat"><div class="msg bot">Envie documentos à esquerda e faça perguntas. Cada resposta traz as fontes usadas.</div></div>
  <form id="f"><input type="text" id="q" placeholder="Digite sua pergunta" required style="min-width:200px">
   <label class="opt"><input type="checkbox" id="hy" checked> Busca híbrida</label>
@@ -45,6 +45,7 @@ form{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
 </div>
 <script>
 const $=id=>document.getElementById(id);
+let history=[];
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 async function loadDocs(){
   const d=await (await fetch('/documents')).json();
@@ -67,14 +68,16 @@ $('f').onsubmit=async e=>{
   e.preventDefault();const q=$('q').value.trim();$('q').value='';$('go').disabled=true;
   add('me',esc(q));const w=add('bot','Buscando…');
   try{
-    const r=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,rerank:$('rr').checked,hybrid:$('hy').checked})});
+    const r=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,rerank:$('rr').checked,hybrid:$('hy').checked,history:history.slice(-6)})});
     const j=await r.json();if(!r.ok)throw new Error(j.detail);
+    history.push({role:'user',content:q},{role:'assistant',content:j.answer});
     const used=new Set([...j.answer.matchAll(/\[(\d+)\]/g)].map(m=>+m[1]));
     const src=j.sources.filter(s=>used.has(s.id));
     w.innerHTML=esc(j.answer).replace(/\[(\d+)\]/g,'<span class="cite">$1</span>')+
-     (src.length?'<div class="src">'+src.map(s=>`<details><summary><span class="cite">${s.id}</span> ${esc(s.source)} · ${esc(s.location)} · ${esc(s.origin)} · ${s.score_type} ${s.relevance}</summary>${esc(s.snippet)}…</details>`).join('')+'</div>':'')+`<div class="mode">Modo: ${esc(j.mode||'')}</div>`;
+     (src.length?'<div class="src">'+src.map(s=>`<details><summary><span class="cite">${s.id}</span> ${esc(s.source)} · ${esc(s.location)} · ${esc(s.origin)} · ${s.score_type} ${s.relevance}</summary>${esc(s.snippet)}…</details>`).join('')+'</div>':'')+`<div class="mode">Modo: ${esc(j.mode||'')}${j.standalone_question&&j.standalone_question!==q?'<br>Pergunta interpretada: '+esc(j.standalone_question):''}</div>`;
   }catch(err){w.textContent='Erro: '+err.message}
   $('go').disabled=false;
 };
+$('new').onclick=()=>{history=[];$('chat').innerHTML='<div class="msg bot">Nova conversa iniciada.</div>'};
 loadDocs();
 </script></body></html>
