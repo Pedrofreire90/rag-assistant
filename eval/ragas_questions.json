@@ -1,0 +1,10 @@
+[
+  {
+    "question": "Por que Andreas Antonopoulos compara o Bitcoin à invenção da prensa de Gutenberg e à própria Internet no seu livro??",
+    "reference": "O livro explica que, assim como a prensa de Gutenberg descentralizou o acesso à informação escrita e a Internet descentralizou a comunicação e a publicação de dados, o Bitcoin descentralizou a confiança e o controle do dinheiro. Ele é apresentado não apenas como uma moeda digital, mas como uma plataforma tecnológica de consenso global, que permite transferir valor sem a necessidade de intermediários centrais (como bancos ou governos)."
+  },
+  {
+    "question": "Como o livro explica a diferença entre a segurança baseada em perímetro (bancos tradicionais) e a segurança baseada em matemática/criptografia do Bitcoin?",
+    "reference": "Os sistemas bancários tradicionais usam segurança baseada em perímetro (muros altos em volta dos dados, como firewalls e senhas), que falha quando o perímetro é violado. O Bitcoin, por outro lado, utiliza segurança matemática baseada em criptografia de chave pública/privada e prova de trabalho (Proof of Work). No Bitcoin, a rede é inerentemente aberta e insegura, mas as transações são protegidas por leis matemáticas e regras de consenso distribuídas, tornando o sistema resiliente mesmo sem muros de proteção centralizados."
+  }
+]

@@ -18,6 +18,8 @@ services:
       DATABASE_URL: postgresql+psycopg://rag:rag@db:5432/rag
     ports:
       - "8000:8000"
+    volumes:
+      - ./eval:/code/eval
     depends_on:
       db:
         condition: service_healthy
